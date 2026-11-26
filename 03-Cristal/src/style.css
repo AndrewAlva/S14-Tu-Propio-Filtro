@@ -1,0 +1,67 @@
+:root {
+  color-scheme: dark;
+  --fondo: #050806;
+  --texto: #d8e3d4;
+  --tenue: #6f7d6c;
+  --linea: #1f2b22;
+  --acento: #7dffb2;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 400 13px/1.45 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+canvas.mundo { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; }
+
+/* la ficha del shader activo, arriba a la izquierda */
+.ficha {
+  position: fixed; left: 24px; top: 22px; z-index: 2;
+  width: min(380px, calc(100vw - 48px));
+  pointer-events: none;
+}
+.ficha h1 {
+  margin: .3em 0 .25em;
+  font: 700 clamp(28px, 4.4vw, 54px)/1 system-ui, sans-serif;
+  letter-spacing: -.02em;
+}
+.rotulo { margin: 0; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--tenue); }
+.idea { margin: 0 0 1em; color: var(--texto); font: 400 15px/1.4 system-ui, sans-serif; }
+.ficha dl { display: grid; grid-template-columns: auto 1fr; gap: .45em 1em; margin: 0; }
+.ficha dt { color: var(--tenue); text-transform: uppercase; letter-spacing: .1em; font-size: 10px; padding-top: .2em; }
+.ficha dd { margin: 0; }
+.tenue { color: var(--tenue); }
+
+/* los botones: uno por shader. El activo, prendido; tocarlo otra vez regresa al original */
+.botones {
+  position: fixed; left: 50%; bottom: 22px; z-index: 2;
+  translate: -50% 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  width: min(900px, calc(100vw - 32px));
+}
+.botones button {
+  cursor: pointer;
+  font: inherit; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--texto);
+  background: rgb(5 8 6 / .7);
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  padding: .75em 1.15em;
+  backdrop-filter: blur(6px);
+  transition: border-color .2s, background .2s, color .2s;
+}
+.botones button:hover { border-color: var(--acento); }
+.botones button[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+.botones button:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+.botones kbd { opacity: .55; margin-right: .5em; font: inherit; }
+.botones .extra { color: var(--tenue); }
+
+.lectura { position: fixed; right: 18px; top: 18px; z-index: 2; margin: 0; color: var(--tenue); font-size: 11px; text-align: right; }
+
+@media (max-width: 720px) {
+  .ficha dl, .idea { display: none; }
+}

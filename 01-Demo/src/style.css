@@ -1,0 +1,74 @@
+:root {
+  color-scheme: dark;
+  --fondo: #050806;
+  --texto: #d8e3d4;
+  --tenue: #6f7d6c;
+}
+
+html, body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 400 13px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* mientras el telón está arriba no se puede hacer scroll */
+body.bloqueado { overflow: hidden; }
+
+/* el canvas queda fijo; lo que se mueve es la página que hay "encima" */
+canvas.mundo {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* el largo de la bajada: más alto = se baja más despacio */
+.recorrido { height: 900vh; }
+
+.telon {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: var(--fondo);
+  transition: opacity 1.4s ease;
+}
+.telon.fuera { opacity: 0; pointer-events: none; }
+.telon p { margin: 0; letter-spacing: .14em; color: var(--tenue); }
+.telon span { color: var(--texto); font-variant-numeric: tabular-nums; }
+
+/* lectura para clase: tier, resolución y fps en vivo */
+.hud {
+  position: fixed;
+  left: 16px;
+  bottom: 12px;
+  z-index: 5;
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tenue);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.pista {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  translate: -50% 0;
+  z-index: 5;
+  margin: 0;
+  letter-spacing: .24em;
+  color: var(--tenue);
+  transition: opacity .8s;
+  pointer-events: none;
+}
+.pista.oculta { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .telon, .pista { transition: none; }
+}

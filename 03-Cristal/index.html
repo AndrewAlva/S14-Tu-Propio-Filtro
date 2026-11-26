@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050806">
+  <link rel="icon" href="data:,">
+  <title>El cristal de la cueva · Cinco shaders · S14</title>
+</head>
+<body>
+  <!-- La interfaz es HTML encima del canvas: los botones los arma main.js
+       a partir de la lista de shaders, para que agregar uno sea agregar una carpeta. -->
+  <header class="ficha">
+    <p class="rotulo">S14 · El cristal de la cueva</p>
+    <h1 data-ui="nombre">Original</h1>
+    <p data-ui="idea" class="idea"></p>
+    <dl>
+      <dt>Vértice</dt><dd data-ui="vertice"></dd>
+      <dt>Fragmento</dt><dd data-ui="fragmento"></dd>
+      <dt>Archivos</dt><dd data-ui="archivos" class="tenue"></dd>
+    </dl>
+  </header>
+  <nav class="botones" data-ui="botones" aria-label="Shaders del cristal"></nav>
+  <p class="lectura" data-ui="lectura"></p>
+  <noscript>Esta demo necesita JavaScript.</noscript>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
