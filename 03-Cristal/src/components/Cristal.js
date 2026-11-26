@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 import comun from '../shaders/comun.glsl?raw';
-import { shaders } from '../shaders/index.js';
+import { shaders, ayudante } from '../shaders/index.js';
 
 // El cristal de la cueva: el mismo prisma hexagonal con punta de la S13,
 // pero con muchas más divisiones a lo alto para que el vertex shader tenga
 // vértices que mover. Uno grande al centro y seis chicos alrededor;
 // todos comparten material, así que cambiar el shader los cambia a todos.
 
-const ALTO = 3.1;   // del pie a la punta, en unidades de la escena
+const ALTO = 3.1;        // del pie a la punta, en unidades de la escena
+// El mapa UV abierto: un cuadro de 3 × 3, un poco arriba y hacia la cámara.
+// main.js usa los mismos números para saber qué (u, v) hay bajo el mouse.
+export const MAPA = { lado: 3, subir: 0.3, acercar: 0.8 };
 
 export class Cristal {
   constructor({ escena }) {
@@ -27,8 +30,17 @@ export class Cristal {
       uTiempo: { value: 0 },
       uAlto: { value: ALTO },
       uProgreso: { value: 0 },   // lo usa la desintegración
+      // los del ayudante de UV
+      uDesenvolver: { value: 0 },   // 0 = cristal, 1 = abierto en su mapa
+      uLadoMapa: { value: MAPA.lado },
+      uSubirMapa: { value: MAPA.subir },
+      uAcercarMapa: { value: MAPA.acercar },
+      uBarrido: { value: 0 },
+      uPunto: { value: new THREE.Vector2() },
+      uHayPunto: { value: 0 },
     };
-    this.materiales = shaders.map((s) => new THREE.ShaderMaterial({
+    // los cinco shaders y, al final, el ayudante de UV
+    this.materiales = [...shaders, ayudante].map((s) => new THREE.ShaderMaterial({
       vertexShader: comun + s.vertice,
       fragmentShader: comun + s.fragmento,
       uniforms: this.uniforms,
@@ -50,11 +62,14 @@ export class Cristal {
       this.cuerpos.push(m);
     }
     this.activo = -1;   // -1 = original
+    this.UV = shaders.length;   // el índice del ayudante
+    this.abrir = 0;             // a dónde va uDesenvolver
   }
 
   // i = índice del shader, o -1 para regresar al material original
   usar(i) {
     this.activo = i;
+    if (i !== this.UV) { this.abrir = 0; this.uniforms.uDesenvolver.value = 0; }
     const material = i < 0 ? this.original : this.materiales[i];
     for (const m of this.cuerpos) m.material = material;
   }
@@ -71,7 +86,16 @@ export class Cristal {
     const ida = THREE.MathUtils.smoothstep(fase, 0.1, 0.48);
     const vuelta = THREE.MathUtils.smoothstep(fase, 0.55, 0.92);
     this.uniforms.uProgreso.value = ida - vuelta;
-    this.grupo.rotation.y = t * 0.12;
+
+    // UV: la línea que sube de v = 0 a v = 1, y el cristal que se abre o se cierra
+    this.uniforms.uBarrido.value = (t * 0.12) % 1;
+    const u = this.uniforms.uDesenvolver;
+    u.value += (this.abrir - u.value) * (1 - Math.exp(-3.5 * dt));
+    if (Math.abs(this.abrir - u.value) < 0.001) u.value = this.abrir;
+
+    // abierto no gira: así el mapa se queda quieto para leerlo
+    this.giro = (this.giro ?? 0) + dt * 0.12 * (1 - u.value);
+    this.grupo.rotation.y = this.giro;
   }
 
   liberar() {

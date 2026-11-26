@@ -59,9 +59,26 @@ canvas.mundo { position: fixed; inset: 0; width: 100vw; height: 100vh; display: 
 .botones button:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
 .botones kbd { opacity: .55; margin-right: .5em; font: inherit; }
 .botones .extra { color: var(--tenue); }
+.botones .ayudante { border-style: dashed; }
+.botones [hidden] { display: none; }
+
+/* el mapa UV (solo en modo UV), a la derecha */
+.mapa-uv {
+  position: fixed; right: 18px; top: 50%; translate: 0 -50%; z-index: 2;
+  padding: 12px 12px 10px;
+  background: rgb(5 8 6 / .72);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+.mapa-uv[hidden] { display: none; }
+.mapa-uv canvas { display: block; margin: 8px 0 6px; }
+.mapa-uv__lectura { margin: 0; font-size: 11px; color: var(--texto); }
 
 .lectura { position: fixed; right: 18px; top: 18px; z-index: 2; margin: 0; color: var(--tenue); font-size: 11px; text-align: right; }
 
 @media (max-width: 720px) {
   .ficha dl, .idea { display: none; }
+  .mapa-uv { display: none; }
 }
